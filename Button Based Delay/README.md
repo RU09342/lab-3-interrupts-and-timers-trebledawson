@@ -11,6 +11,7 @@ The Timer A0 interrupt simply toggles the LED output whenever it is fired, i.e. 
 The Port 1 interrupt has two functionalities, one for when the button is depressed, and one for when the button is released. 
 * When the button is depressed, the interrupt vector activates Timer A1, whose sole duty is to track how long the button has been depressed. After activating the timer, the interrupt then sets the interrupt condition for the Port 1 interrupt vector to be the release of the button.
 * When the button is released, the interrupt vector halts both Timer A1 and Timer A0, then resets Timer A0. Then, the interrupt assigns TA0CCR0 a new value corresponding to the value held in the Timer A1 counter register, indicating the length that the button was depressed. Timer A0 is then restarted, and the LED output resumes with the new frequency. The Timer A1 counter register is reset, and the interrupt condition for the Port 1 interrupt vector is set to once again be when the button is depressed.
+
 After either of these conditions, the interrupt flag for the Port 1 interrupt vector is reset.
 
 # Frequency Calculator
