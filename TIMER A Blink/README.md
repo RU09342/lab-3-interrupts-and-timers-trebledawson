@@ -1,15 +1,11 @@
-# TIMER A Blink
-The TIMER peripherals can be used in many situations thanks to it flexibility in features. For this lab, you will be only scratching the surface as to what this peripheral can do. 
+# Introduction
+This project consisted of writing a program in C to control an MSP430 microprocessor to allow the control of onboard LEDs using the MSP430 built in clocks and timer interrupt vectors. The program was primarily developed on the MSP430G2553, and was subsequently ported to the other development boards.
 
-## Up, Down, Continuous 
-There are a few different ways that the timer module can count. For starters, one of the easiest to initialize is Continuous counting where in the TIMER module will alert you when its own counting register overflows. Up mode allows you to utilize a Capture/Compare register to have the counter stop at a particular count and then start back over again. You can also set the TIMER to Up/Down mode where upon hitting a counter or the overflow, instead of setting the counter back to zero, it will count back down to zero. 
+# Basic Functionality
+The introduction to the main() initializes the pin inputs and outputs, as well as initializes the timer A control register and capture/compare control register. TA0CCR0 can be set variably, and the function freqCalc() was written to calculate the value of TA0CCR0 for a given desired blink frequency.
 
-## Task
-Using the TIMER module instead of a software loop, control the speed of two LEDS blinking on your development boards. Experiment with the different counting modes available as well as the effect of the pre-dividers. Why would you ever want to use a pre-divider? What about the Capture and Compare registers? Your code should include a function (if you want, place it in its own .c and .h files) which can convert a desired Hz into the proper values required to operate the TIMER modules.
+# Interrupt
+The interrupt vector TIMER0_A0_VECTOR is the vector specifically assigned to the MSP430 Timer A. When the Timer A interrupt flag is set, the code inside this interrupt vector runs, toggling the LED output.
 
-### Extra Work
-#### Thinking with HALs
-So maybe up to this point you have noticed that your software is looking pretty damn similar to each other for each one of these boards. What if there was a way to abstract away all of the particulars for a processor and use the same functional C code for each board? Just for this simple problem, why don't you try and build a "config.h" file which using IFDEF statements can check to see what processor is on board and initialize particular registers based on that.
-
-#### Low Power Timers
-Since you should have already done a little with interrupts, why not build this system up using interrupts and when the processor is basically doing nothing other than burning clock cycles, drop it into a Low Power mode. Do a little research and figure out what some of these low power modes actually do to the processor, then try and use them in your code. If you really want to put your code to the test, using the MSP430FR5994 and the built in super cap, try and get your code to run for the longest amount of time only using that capacitor as your power source.
+# Frequency Calculator
+This function accepts an unsigned integer "desired", representing a desired blink frequency, and outputs an unsigned integer representing the value to be stored in TA0CCR0. The calculation is simply the frequency of the SMCLK (1,048,576 cycles/second) divided by 8 (as Timer A uses the /8 divider), divided by the desired frequency multiplied by 2 (to account for the toggling frequency of the desired blink frequency).
